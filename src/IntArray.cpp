@@ -4,7 +4,7 @@
 
 #include <cassert>
 #include <iostream>
-#include "IntArray.h"
+#include "../includes/IntArray.h"
 
 IntArray::IntArray(int size) : m_size { size }{
     assert(size >=0 );

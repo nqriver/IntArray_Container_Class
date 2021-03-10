@@ -3,4 +3,4 @@ project(IntArray_Container_Class)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(IntArray_Container_Class main.cpp IntArray.cpp IntArray.h)
+add_executable(IntArray_Container_Class src/main.cpp src/IntArray.cpp includes/IntArray.h)

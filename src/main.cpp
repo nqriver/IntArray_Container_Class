@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include "IntArray.h"
+#include "../includes/IntArray.h"
 
 int main() {
     IntArray arr(5);
