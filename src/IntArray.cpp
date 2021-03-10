@@ -96,11 +96,38 @@ void IntArray::print() {
 
 }
 
-void quickSort(IntArray &arr, int left, int rigth) {
+//void quickSort(IntArray &arr, int left, int rigth) {
+//
+//}
+
+IntArray::iterator::iterator(int *pointer) : i_pointer{ pointer }
+{
 
 }
 
-IntArray::iterator::iterator(int *pointer, int index) : i_pointer{ pointer }, i_index{ index }
-{
+bool operator==(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return it_1.i_pointer == it_2.i_pointer;
+}
 
+bool operator!=(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return !(it_1 == it_2);
+}
+
+IntArray::iterator &IntArray::iterator::operator++() {
+    ++i_pointer;
+    return *this;
+}
+
+IntArray::iterator IntArray::iterator::operator++ (int) {
+    auto tempIter = *this;
+    ++(*this);
+    return tempIter;
+}
+
+int *IntArray::iterator::operator->() {
+    return i_pointer;
+}
+
+int &IntArray::iterator::operator*() const {
+    return *i_pointer;
 }
