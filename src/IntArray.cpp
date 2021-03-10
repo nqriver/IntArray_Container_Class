@@ -1,7 +1,3 @@
-//
-// Created by lukas on 09.03.2021.
-//
-
 #include <cassert>
 #include <iostream>
 #include "../includes/IntArray.h"
@@ -14,9 +10,22 @@ IntArray::IntArray(int size) : m_size { size }{
 IntArray::~IntArray() {
     m_size = 0;
     delete [] m_array;
+    m_array = nullptr;
+    begin();
+    end();
+}
+
+
+int IntArray::size() const {
+    return m_size;
 }
 
 int &IntArray::operator [](int index) {
+    assert(index >=0 and index <= m_size-1);
+    return m_array[index];
+}
+
+const int &IntArray::operator[](int index) const {
     assert(index >=0 and index <= m_size-1);
     return m_array[index];
 }
@@ -25,6 +34,8 @@ void IntArray::erase() {
     delete [] m_array;
     m_array = nullptr;
     m_size = 0;
+    begin();
+    end();
 }
 
 void IntArray::reallocate(int new_size) {   // reallocate resizes the array.  Any existing elements will be destroyed.
@@ -34,6 +45,8 @@ void IntArray::reallocate(int new_size) {   // reallocate resizes the array.  An
     }
     m_array = new int [new_size];
     m_size = new_size;
+    begin();
+    end();
 }
 
 void IntArray::resize(int new_size) {   // resize resizes the array.  Any existing elements will be kept.
@@ -55,6 +68,8 @@ void IntArray::resize(int new_size) {   // resize resizes the array.  Any existi
         delete [] m_array;
         m_array = data;
         m_size = new_size;
+        begin();
+        end();
     }
 }
 
@@ -71,6 +86,8 @@ void IntArray::insertBefore(int value, int index) {
     delete [] m_array;
     m_array = data;
     m_size ++;
+    begin();
+    end();
 }
 
 void IntArray::remove(int index) {
@@ -85,24 +102,46 @@ void IntArray::remove(int index) {
     delete [] m_array;
     m_array = data;
     m_size--;
+    begin();
+    end();
 }
 
-void IntArray::print() {
-    std::cout << "[";
-    for (int i { 0 }; i < m_size-1; i++){
-        std::cout << m_array[i] << ", ";
+std::ostream &operator<<(std::ostream &out, const IntArray &array) {
+    out << "[SIZE : " << array.size() << "]  [";
+    for (int i { 0 }; i < array.m_size-1; i++){
+        out << array[i] << ", ";
     }
-    std::cout << m_array[m_size-1] << "]";
-
+    out << array[array.m_size-1] << "]" << std::endl <<std::endl;
+    return out;
 }
 
-//void quickSort(IntArray &arr, int left, int rigth) {
-//
-//}
 
-IntArray::iterator::iterator(int *pointer) : i_pointer{ pointer }
+//
+//
+//      Iterator methods
+//
+//
+
+
+IntArray::iterator::iterator(int *pointer, int index) : i_pointer{ pointer }, i_index{ index }
 {
 
+}
+
+int &IntArray::iterator::operator[](int index) {
+    return *(i_pointer + index);
+}
+
+int *IntArray::iterator::operator->() {
+    return i_pointer;
+}
+
+int &IntArray::iterator::operator*() const {
+    return *i_pointer;
+}
+
+int &IntArray::iterator::operator*() {
+    return *i_pointer;
 }
 
 bool operator==(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
@@ -114,20 +153,65 @@ bool operator!=(const IntArray::iterator &it_1, const IntArray::iterator &it_2) 
 }
 
 IntArray::iterator &IntArray::iterator::operator++() {
+    ++i_index;
     ++i_pointer;
     return *this;
 }
 
 IntArray::iterator IntArray::iterator::operator++ (int) {
-    auto tempIter = *this;
+    auto clone { *this };
     ++(*this);
-    return tempIter;
+    return clone;
 }
 
-int *IntArray::iterator::operator->() {
-    return i_pointer;
+IntArray::iterator &IntArray::iterator::operator--() {
+    --i_index;
+    --i_pointer;
+    return *this;
 }
 
-int &IntArray::iterator::operator*() const {
-    return *i_pointer;
+IntArray::iterator IntArray::iterator::operator--(int) {
+    auto clone { *this };
+    --(*this);
+    return clone;
+}
+
+IntArray::iterator IntArray::iterator::operator+(int value) {
+    return {i_pointer + value, i_index + value};
+}
+
+IntArray::iterator IntArray::iterator::operator-(int value) {
+    return {i_pointer - value, i_index - value};
+}
+
+IntArray::iterator IntArray::iterator::operator-=(int value) {
+    i_index -= value;
+    i_pointer -= value;
+    return *this;
+}
+
+IntArray::iterator IntArray::iterator::operator+=(int value) {
+    i_index += value;
+    i_pointer += value;
+    return *this;
+}
+
+int operator-(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return (it_1.i_index - it_2.i_index);
+}
+
+bool operator>(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return (it_1 - it_2 > 0);
+}
+
+bool operator>=(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return !(it_1 < it_2);
+}
+
+bool operator<(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return (it_2 > it_1);
+}
+
+bool operator<=(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
+    return !(it_1 > it_2);
 }
