@@ -58,7 +58,7 @@ void IntArray::resize(int new_size) {   // resize resizes the array.  Any existi
         return;
     }
     else{
-        int * data { new int [new_size]};
+        int * data { new int [new_size]{} };
         if (m_size > 0){
             int elementsToCopy { m_size > new_size ? new_size : m_size};
             for (int i {0}; i < elementsToCopy; ++i){
@@ -123,7 +123,7 @@ std::ostream &operator<<(std::ostream &out, const IntArray &array) {
 //
 
 
-IntArray::iterator::iterator(int *pointer, int index) : i_pointer{ pointer }, i_index{ index }
+IntArray::iterator::iterator(pointer ptr, value_type index) : i_pointer{ ptr }, i_index{ index }
 {
 
 }
@@ -214,4 +214,30 @@ bool operator<(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
 
 bool operator<=(const IntArray::iterator &it_1, const IntArray::iterator &it_2) {
     return !(it_1 > it_2);
+}
+
+IntArray::IntArray(std::initializer_list<int> initList)
+        : IntArray::IntArray(static_cast<int>(initList.size()))
+{
+    auto counter { 0 };
+    for (auto element : initList){
+        m_array[counter] = element;
+        ++counter;
+    }
+}
+
+IntArray &IntArray::operator=(std::initializer_list<int> initList) {
+    int size { static_cast<int>(initList.size()) };
+    if (size != m_size){
+        delete [] m_array;
+        m_size = size;
+        m_array = new int [m_size] {};
+    }
+
+    int counter { 0 };
+    for (auto element: initList){
+        m_array[counter] = element;
+        ++counter;
+    }
+    return *this;
 }
