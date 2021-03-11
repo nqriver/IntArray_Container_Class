@@ -3,9 +3,11 @@
 #include "../includes/IntArray.h"
 
 void test();
+void test_2();
 
 int main() {
     test();
+    test_2();
     return 0;
 }
 
@@ -40,4 +42,13 @@ void test(){
     std::fill(arr.begin(), arr.end(), 2);
     std::cout << arr;
     arr.erase();
+}
+
+void test_2(){
+    IntArray arr {1,2,3,4,5,6,7}; //initialized via initializer_list
+    std::cout << arr;
+    arr = {90,80,70};             //copy assignment via initializer_list
+    std::cout << "Current last element : " << *(std::prev(arr.end(), 1)) << std::endl;
+    arr.resize(10);
+    std::cout << arr;
 }

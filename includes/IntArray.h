@@ -12,11 +12,17 @@ private:
 private:
     class iterator{
     public:
-        iterator(int *pointer, int index);
-        int& operator [](int index);
-        int &operator *();
-        int &operator *() const;
-        int *operator ->();
+        using difference_type = int;
+        using value_type = int;
+        using pointer = int*;
+        using reference = int&;
+        using iterator_category = std::random_access_iterator_tag;
+    public:
+        iterator(pointer ptr, value_type index);
+        reference operator [](int index);
+        reference operator *();
+        reference operator *() const;
+        pointer operator ->();
         iterator &operator ++();
         iterator operator ++(int);
         iterator &operator --();
@@ -36,12 +42,6 @@ private:
     private:
         int * i_pointer;
         int i_index;
-    public:
-        using difference_type = int;
-        using value_type = int;
-        using pointer = int*;
-        using reference = int&;
-        using iterator_category = std::random_access_iterator_tag;
     };
 
 public:             // for defined friend function operators overloading for nested 'iterator' class
@@ -56,6 +56,9 @@ public:             // for defined friend function operators overloading for nes
 public:
     IntArray() = default;
     explicit IntArray(int size);
+    IntArray(std::initializer_list<int> initList);
+    IntArray(IntArray &) = delete;
+    IntArray &operator = (std::initializer_list<int> initList);
     ~IntArray();
     int size() const;
     int &operator [] (int index);
